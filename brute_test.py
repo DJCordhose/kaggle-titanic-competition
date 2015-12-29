@@ -225,8 +225,10 @@ def main():
         iFeatures.append(feat_c)
         Features.append(fn)
 
+        # http://scikit-learn.org/stable/modules/ensemble.html#adaboost
+        # 200 estimators looked better
         # adaboost
-        e_in,e_out = adaboost(df,label_name,fn,lFl,feat_c,n_estimators=100)
+        e_in,e_out = adaboost(df,label_name,fn,lFl,feat_c,n_estimators=200)
         Model_name.append('adaboost')
         E_in.append(e_in)
         E_out.append(e_out)
@@ -276,7 +278,8 @@ def main():
     plt.ylabel('Error Rate (\%)')
     plt.legend(handles=[line_ein, line_eout],labels=['',''])
     #plt.show()
-    plt.savefig('chart_brute_test.png')
+    # requires latex
+    # plt.savefig('chart_brute_test.png')
     
 # ------------------------------------------------------------------------------------------
 # KNN
@@ -388,11 +391,12 @@ def rf(df,label_name,feature_names,features_len,ifeat,n_estimators=100):
 
 
 # http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
+# http://scikit-learn.org/stable/modules/ensemble.html#adaboost
 # ------------------------------------------------------------------------------------------
 # adaboost
 def adaboost(df,label_name,feature_names,features_len,ifeat,n_estimators=100):
     # TODO: just copied from RF, needs real code
-    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.ensemble import AdaBoostClassifier
     print('---------------------------------------------------')
     print(ifeat,features_len,'Adaboost, features:',feature_names)
     df_train_Y = df[label_name]
@@ -401,7 +405,7 @@ def adaboost(df,label_name,feature_names,features_len,ifeat,n_estimators=100):
     df_train_X = df[feature_names]
     train_X = df_train_X.values
 
-    clf =RandomForestClassifier(n_estimators=n_estimators)
+    clf =AdaBoostClassifier(n_estimators=n_estimators)
     clf = clf.fit(train_X,train_Y)
     # output = clf.predict(train_X)
     E_in = round(1.-clf.score(train_X, train_Y),5) # 'in sample' error
